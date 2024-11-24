@@ -1,7 +1,5 @@
 import numpy as np
 import random
-from fvecs_read import fvecs_read
-from sklearn.metrics.pairwise import cosine_similarity
 
 # 𝐾: dimensión de cada espacio proyectado
 # 𝐿: número de espacios proyectados
@@ -47,7 +45,7 @@ class LSH:
 
         buckets = [{} for _ in range(self.L)]
 
-        for point in dataset: # Proyectamos todos los puntos del dataset en cada espacio 
+        for point in dataset: # Proyectamos todos los puntos del dataset en cada espacio 0 a 𝐿 - 1
 
             for space_index in range(self.L):
 
@@ -69,48 +67,3 @@ class LSH:
                 candidates.update(tuple(point) for point in buckets[space_index][bucket_key])
 
         return list(candidates)
-
-
-if __name__ == "__main__":
-
-    dataset = fvecs_read("movielens/movielens_base.fvecs")
-
-    K = 50
-    L = 16      
-    d = dataset[0].size
-    w = 10.0
-
-    lsh = LSH(K, L, d, w)
-
-
-    # Asignar puntos a buckets en los L espacios proyectados
-    buckets_per_space = lsh.assign_to_buckets(dataset)
-
-    print("Buckets en cada espacio proyectado:")
-    for i, buckets in enumerate(buckets_per_space):
-        print(f"Espacio {i}:")
-        for bucket_key, points in buckets.items():
-            print(f"  Bucket {bucket_key}: points")
-
-    queries = fvecs_read("movielens/movielens_query.fvecs")
-    query = queries[0]
-    
-    candidates = lsh.query(query, buckets_per_space)
-
-    print("Punto de consulta:", query)
-    print("Candidatos:", candidates)
-
-
-
-    # calcular similitud coseno
-    # para saber si LSH realmente retorna movies parecidas al query
-
-    query = query.reshape(1, -1)
-    candidates = np.array(candidates)
-    similarities = cosine_similarity(query, candidates)[0]
-
-    # resultados ordenados
-    sorted_indices = np.argsort(similarities)[::-1]
-    for i in sorted_indices:
-        print(f"Candidate {i} Similarity: {similarities[i]}")
-
