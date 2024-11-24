@@ -13,17 +13,3 @@ def fvecs_read(filename, c_contiguous=True):
     if c_contiguous:
         fv = fv.copy()
     return fv
-
-movies = fvecs_read("movielens/movielens_base.fvecs")
-queries = fvecs_read("movielens/movielens_query.fvecs")
-
-print("Number of movies: ", movies.size)
-print("Sample movie vector: ")
-print(movies[0])
-print("Sample dimension: ", movies[0].size)
-
-
-print("Number of queries: ", queries.size)
-print("Sample movie vector: ")
-print(queries[0])
-print("Sample dimension: ", queries[0].size)
