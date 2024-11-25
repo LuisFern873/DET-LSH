@@ -19,9 +19,7 @@ class LSH:
     # "we first use 𝐾 · 𝐿 hash functions to calculate the 𝐾-dimensional points in 𝐿 projected spaces"
 
     def generate_hash_functions(self):
-
         H = np.zeros((self.L, self.K), dtype=object)
-
         for i in range(self.L):
             for j in range(self.K):
                 a = np.random.normal(size=self.d)  # Vector aleatorio en d dimensiones
@@ -39,6 +37,18 @@ class LSH:
             h = np.floor((np.dot(a, point) + b) / self.w)
             hashes.append(int(h))
         return tuple(hashes) # H𝑖(𝑜)
+    
+
+    def project_dataset(self, dataset):
+        
+        n = len(dataset)
+        projected_points = np.zeros((self.L, n, self.K), dtype=int)
+
+        for i in range(self.L):  # Para cada espacio proyectado
+            for idx, point in enumerate(dataset):  # Para cada punto en el dataset
+                projected_points[i, idx] = self.project_point(point, i)
+        
+        return projected_points
 
 
     def assign_to_buckets(self, dataset):
