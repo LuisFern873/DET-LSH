@@ -5,8 +5,8 @@ import random
 # 𝐿: número de espacios proyectados
 # d: dimensión del espacio original
 # w: ancho de los buckets
-
 # H: hash functions (𝐾*𝐿)
+
 class LSH:
     def __init__(self, K, L, d, w):
         self.K = K
@@ -40,7 +40,7 @@ class LSH:
     
 
     def project_dataset(self, dataset):
-        
+
         n = len(dataset)
         projected_points = np.zeros((self.L, n, self.K), dtype=int)
 

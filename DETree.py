@@ -31,9 +31,6 @@ class DETree:
             self.split_node(current_node)
 
     def split_node(self, node):
-        """
-        Divide un nodo hoja en dos hijos, basándose en una dimensión específica.
-        """
         # Selecciona la dimensión para dividir (balance dinámico)
         num_dimensions = len(node.points[0][1])  # Número de dimensiones en la representación codificada
         split_dimension = self.select_split_dimension(node.points, num_dimensions)
@@ -60,10 +57,6 @@ class DETree:
         node.points = []  # Limpiar puntos del nodo convertido
 
     def select_split_dimension(self, points, num_dimensions):
-        """
-        Selecciona dinámicamente la mejor dimensión para dividir el nodo.
-        Se elige la dimensión con la mayor variabilidad.
-        """
         variances = []
         for d in range(num_dimensions):
             values = [point[1][d] for point in points]
@@ -71,16 +64,6 @@ class DETree:
         return np.argmax(variances)  # Retorna la dimensión con mayor varianza
 
     def range_query(self, query_point, radius):
-        """
-        Realiza una consulta por rango en el DE-Tree.
-        
-        Parámetros:
-        - query_point: Punto de consulta codificado.
-        - radius: Radio de búsqueda.
-
-        Retorna:
-        - candidates: Lista de puntos dentro del rango.
-        """
         candidates = []
         self._range_query_recursive(self.root, query_point, radius, candidates)
         return candidates
@@ -100,28 +83,23 @@ class DETree:
                 self._range_query_recursive(node.children[1], query_point, radius, candidates)
 
 
-    
+    def print_tree(self, node=None, depth=0):
 
+        if node is None:
+            node = self.root
 
-max_leaf_size = 10
-de_tree = DETree(max_leaf_size)
+        # Imprimir información del nodo
+        indent = " " * depth * 2
 
-# Puntos simulados codificados
-encoded_points = [
-    ([0.1, 0.2], [1, 3]),
-    ([0.3, 0.7], [2, 2]),
-    ([0.4, 0.9], [1, 1]),
-    ([0.6, 0.8], [2, 3])
-]
+        if node.is_leaf:
+            print(f"{indent}Hoja: {len(node.points)} puntos")
+            for point, encoded in node.points:
+                print(f"{indent}  Punto: {point}, Codificado: {encoded}")
+        else:
+            print(f"{indent}Nodo Interno - Dividido por dimensión {node.split_dimension} con valor {node.split_value}")
+            print(f"{indent}  Hijos:")
+            for i, child in enumerate(node.children):
+                print(f"{indent}    Hijo {i}:")
+                self.print_tree(child, depth + 1)  # imprimir los hijos
 
-# Insertar puntos en el DE-Tree
-for point, encoded in encoded_points:
-    de_tree.insert(point, encoded)
-
-# Consulta por rango
-query_point = [1, 2]
-radius = 1
-candidates = de_tree.range_query(query_point, radius)
-
-print("Puntos en el rango:", candidates)
 
