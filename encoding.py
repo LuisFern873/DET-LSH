@@ -1,6 +1,4 @@
 import numpy as np
-from LSH import LSH
-from fvecs_read import fvecs_read
 
 def breakpoints_selection(K, L, dataset, sample_size, num_regions):
     # Dimensiones: 𝐾 * 𝐿 * (num_regions + 1)
